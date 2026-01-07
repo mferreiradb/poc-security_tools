@@ -1,0 +1,98 @@
+# Configuração do Gitleaks para detectar secrets e credenciais expostas
+# Documentação: https://github.com/gitleaks/gitleaks
+
+title = "Gitleaks Configuration - POC Security Tools"
+
+# Configurações globais
+[extend]
+useDefault = true  # Usar as regras padrão do Gitleaks
+
+# Paths a serem ignorados (não escanear)
+[allowlist]
+paths = [
+  # Ignorar node_modules e dependências
+  '''node_modules/''',
+  '''package-lock.json''',
+  '''yarn.lock''',
+  '''pnpm-lock.yaml''',
+  
+  # Ignorar arquivos de build
+  '''dist/''',
+  '''build/''',
+  '''.next/''',
+  
+  # Ignorar arquivos de documentação (README, CHANGELOG, etc.)
+  # NOTA: Os arquivos em gitleaks/examples/ NÃO são ignorados propositalmente
+  # pois queremos que o Gitleaks detecte os secrets de exemplo para fins de teste
+]
+
+# Regexes a serem ignorados globalmente
+regexes = [
+  # Ignorar exemplos de tokens fictícios em documentação
+  '''example[_-]?(token|key|secret|password)''',
+  '''your[_-]?(token|key|secret|password|api[_-]?key)''',
+  '''placeholder''',
+]
+
+# Configuração para regras customizadas adicionais
+# As regras abaixo complementam as regras padrão do Gitleaks
+
+[[rules]]
+id = "generic-api-key"
+description = "Detected a generic API key pattern"
+regex = '''(?i)(api[_-]?key|apikey)[_-]?[:=]\s*['"]?([a-z0-9_\-]{32,})['"]?'''
+tags = ["api-key", "security"]
+
+[[rules]]
+id = "generic-secret-key"
+description = "Detected a generic secret key pattern"
+regex = '''(?i)(secret[_-]?key|secretkey)[_-]?[:=]\s*['"]?([a-z0-9_\-]{32,})['"]?'''
+tags = ["secret", "security"]
+
+[[rules]]
+id = "database-password"
+description = "Detected a database password"
+regex = '''(?i)(db[_-]?pass|database[_-]?password|db[_-]?pwd)[_-]?[:=]\s*['"]?([^\s'"]{8,})['"]?'''
+tags = ["database", "password", "security"]
+
+[[rules]]
+id = "jwt-secret"
+description = "Detected a JWT secret"
+regex = '''(?i)(jwt[_-]?secret|jwt[_-]?key)[_-]?[:=]\s*['"]?([a-zA-Z0-9_\-]{32,})['"]?'''
+tags = ["jwt", "secret", "security"]
+
+[[rules]]
+id = "private-key-file"
+description = "Detected a private key in code"
+regex = '''-----BEGIN\s+(RSA\s+)?PRIVATE\s+KEY-----'''
+tags = ["private-key", "security", "high-risk"]
+
+[[rules]]
+id = "connection-string"
+description = "Detected a database connection string with credentials"
+regex = '''(?i)(mongodb|postgresql|mysql|redis)://[^:]+:[^@]+@[^\s'"]+'''
+tags = ["connection-string", "database", "security"]
+
+[[rules]]
+id = "admin-credentials"
+description = "Detected hardcoded admin credentials"
+regex = '''(?i)(admin[_-]?password|admin[_-]?pass|root[_-]?password)[_-]?[:=]\s*['"]?([^\s'"]{8,})['"]?'''
+tags = ["admin", "credentials", "high-risk"]
+
+[[rules]]
+id = "encryption-key"
+description = "Detected an encryption key"
+regex = '''(?i)(encryption[_-]?key|encrypt[_-]?key|cipher[_-]?key)[_-]?[:=]\s*['"]?([a-zA-Z0-9+/=]{16,})['"]?'''
+tags = ["encryption", "security"]
+
+[[rules]]
+id = "bearer-token"
+description = "Detected a Bearer token"
+regex = '''(?i)bearer\s+[a-zA-Z0-9\-_\.=]+'''
+tags = ["bearer", "token", "security"]
+
+[[rules]]
+id = "session-secret"
+description = "Detected a session secret"
+regex = '''(?i)(session[_-]?secret|session[_-]?key)[_-]?[:=]\s*['"]?([a-zA-Z0-9_\-]{32,})['"]?'''
+tags = ["session", "secret", "security"]
