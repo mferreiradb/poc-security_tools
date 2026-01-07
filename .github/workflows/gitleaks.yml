@@ -1,0 +1,61 @@
+# GitHub Actions - Gitleaks Security Scan
+# Este workflow executa o Gitleaks em cada push e pull request
+
+name: Gitleaks Security Scan
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - 'feature/**'
+      - 'feat/**'
+      - 'chore/**'
+      - 'fix/**'
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  gitleaks:
+    name: Detectar Secrets com Gitleaks
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Necessário para análise completa do histórico
+      
+      - name: Executar Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_CONFIG: gitleaks/.gitleaks.toml
+          GITLEAKS_ENABLE_COMMENTS: true
+      
+      - name: Upload dos resultados (se houver vulnerabilidades)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gitleaks-report
+          path: gitleaks-report.json
+      
+      - name: Comentar no PR (se houver secrets detectadas)
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '⚠️ **Gitleaks detectou possíveis secrets expostas neste PR!**\n\n' +
+                    '🔐 Por favor, revise os arquivos e remova quaisquer credenciais hardcoded.\n\n' +
+                    '📋 Verifique o relatório de análise nos artefatos do workflow.\n\n' +
+                    '⚡ Dicas:\n' +
+                    '- Use variáveis de ambiente\n' +
+                    '- Configure secrets no GitHub (Settings > Secrets)\n' +
+                    '- Nunca commite arquivos .env com valores reais'
+            })

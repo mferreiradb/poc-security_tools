@@ -1,0 +1,152 @@
+POC - Ferramentas de Segurança
+===============================
+
+📁 Estrutura do Projeto
+-----------------------
+
+poc-security/
+│
+├── 📂 eslint/                          # ESLint - Análise de código
+│   └── 📂 examples/
+│       ├── api-security/
+│       ├── backend-vulnerabilities/
+│       ├── complex-code/
+│       └── frontend-xss/
+│
+├── 📂 gitleaks/                        # Gitleaks - Detecção de secrets
+│   ├── 📂 examples/
+│   │   ├── 📂 frontend/                # 3 arquivos (~30 secrets)
+│   │   │   ├── api-config.ts
+│   │   │   ├── oauth-handler.tsx
+│   │   │   └── payment-service.ts
+│   │   │
+│   │   └── 📂 backend/                 # 4 arquivos (~50 secrets)
+│   │       ├── .env.production
+│   │       ├── auth-service.ts
+│   │       ├── database-config.ts
+│   │       └── external-services.ts
+│   │
+│   ├── .gitleaks.toml                  # Configuração
+│   ├── pre-commit-hook.sh              # Hook local
+│   ├── install-hook.sh                 # Instalador
+│   ├── github-actions.yml              # Pipeline GitHub
+│   ├── gitlab-ci.yml                   # Pipeline GitLab
+│   ├── azure-pipelines.yml             # Pipeline Azure
+│   ├── bitbucket-pipelines.yml         # Pipeline Bitbucket
+│   ├── README.md                       # Documentação
+│   └── examples/README.md              # Guia dos exemplos
+│
+├── 📄 Documentação
+│   ├── README-POC.md                   # Visão geral
+│   ├── QUICKSTART.md                   # Guia rápido (5 min)
+│   ├── CHANGELOG.md                    # Histórico de mudanças
+│   ├── README.md                       # README principal
+│   ├── INDICE.md
+│   ├── INTEGRACAO.md
+│   ├── RESULTADOS.md
+│   ├── STATUS.md
+│   └── SUMARIO-EXECUTIVO.md
+│
+└── 📄 Configuração
+    ├── .eslintrc.json
+    ├── .gitignore
+    ├── package.json
+    └── tsconfig.json
+
+
+📊 Estatísticas
+---------------
+
+Total de Secrets Detectáveis: ~140+
+
+Frontend (~30):
+  • API Keys: Stripe, AWS, Google, Firebase
+  • OAuth: Google, Facebook, GitHub, Twitter
+  • Payments: Mercado Pago, PayPal, Iugu, Pagarme
+
+Backend (~50):
+  • Databases: PostgreSQL, MongoDB, MySQL, Redis
+  • JWT: Secrets e tokens
+  • Private Keys: RSA, SSH
+  • Cloud: AWS, GCP, Azure
+  • Monitoring: Datadog, Sentry, New Relic
+  • APIs: 40+ serviços externos
+
+
+🚀 Quick Start
+--------------
+
+1. Instalar Gitleaks:
+   $ brew install gitleaks
+
+2. Escanear exemplos:
+   $ gitleaks detect --source=gitleaks/examples --verbose
+
+3. Instalar pre-commit hook:
+   $ ./gitleaks/install-hook.sh
+
+4. Ver documentação:
+   $ cat QUICKSTART.md
+
+
+🔍 Validações Implementadas
+----------------------------
+
+✅ Pre-Commit (Local)
+   • Executa antes de cada commit
+   • Bloqueia se detectar secrets
+   • Feedback imediato ao desenvolvedor
+
+✅ Pipeline (CI/CD)
+   • GitHub Actions
+   • GitLab CI
+   • Azure DevOps
+   • Bitbucket Pipelines
+
+
+📚 Documentação
+---------------
+
+Leitura Recomendada:
+1. QUICKSTART.md          ← Comece aqui (5 min)
+2. README-POC.md          ← Visão geral completa
+3. gitleaks/README.md     ← Detalhes do Gitleaks
+4. gitleaks/examples/README.md ← Guia dos exemplos
+5. CHANGELOG.md           ← Histórico de mudanças
+
+
+🎯 Próximos Passos
+------------------
+
+1. ⚡ Teste rápido:
+   $ cat QUICKSTART.md
+
+2. 📖 Leia a documentação:
+   $ cat README-POC.md
+
+3. 🔧 Configure para seu projeto:
+   - Ajuste .gitleaks.toml
+   - Instale o pre-commit hook
+   - Configure o pipeline
+
+4. 👥 Treine a equipe:
+   - Compartilhe os exemplos
+   - Explique o processo
+   - Estabeleça workflow
+
+
+⚠️  IMPORTANTE
+--------------
+
+Todos os valores nos exemplos são FAKE para demonstração.
+NUNCA use credenciais reais em exemplos ou POCs!
+
+
+📧 Suporte
+----------
+
+Para dúvidas, consulte a documentação em:
+- QUICKSTART.md (início rápido)
+- README-POC.md (visão completa)
+- gitleaks/README.md (Gitleaks detalhado)
+
