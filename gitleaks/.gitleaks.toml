@@ -21,17 +21,8 @@ paths = [
   '''build/''',
   '''.next/''',
   
-  # Ignorar arquivos de documentação (README, CHANGELOG, etc.)
   # NOTA: Os arquivos em gitleaks/examples/ NÃO são ignorados propositalmente
   # pois queremos que o Gitleaks detecte os secrets de exemplo para fins de teste
-]
-
-# Regexes a serem ignorados globalmente
-regexes = [
-  # Ignorar exemplos de tokens fictícios em documentação
-  '''example[_-]?(token|key|secret|password)''',
-  '''your[_-]?(token|key|secret|password|api[_-]?key)''',
-  '''placeholder''',
 ]
 
 # Configuração para regras customizadas adicionais
